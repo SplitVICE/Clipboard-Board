@@ -1,0 +1,99 @@
+public class SQLite
+    {
+
+        ///////////////////////////////////////////////////////////////
+        //-----------------------------------------------------------------
+        //SQLITE C# CLASS TEMPLATE BY VICE. Version 1.0 - Date: 2020/01/30
+        //-----------------------------------------------------------------
+        //
+        //query method: User for all basic queries with no return data. It needs:
+        //strings query and console_output_text. On query you type your query. On
+        //console_output_text you write a message that will be displayed on the console.
+        //
+        //Constructor method: it will automatically save the connection string.
+        //
+        //To create database: Use the method query to create a new database by just
+        //using the statement CREATE TABLE. If the datasource is set (by default DATA.db
+        //the sqlite database file will be automatically created at the same path where 
+        //the application is located.
+        //
+        //To delete and edit records: Use the method query to insert your queries. Either
+        //delete or edit actions will work with this query.
+        //
+        //ReadData method. It will return a DataSet object with all the colums info you provide inside
+        //the query method overload. Here's an example of how to read the DataSet columns:
+        //
+        //-------------------------------------------------------------------------------------
+        //for (int i = 0; i<DS.Tables[0].Rows.Count; i++)
+        //            {
+        //                string column_name_content = DS.Tables[0].Rows[i]["name"].ToString();
+        //                Console.WriteLine(column_name_content);
+        //            }
+        //--------------------------------------------------------------------------------------
+        //
+        //Userfull sources (Spanish)
+        //Cómo CONECTARSE a SQLite Desde un Proyecto en C# [Conexión] #1: https://www.youtube.com/watch?v=IC5npdCOvOU
+        //System.Data.SQLite library must be get from NuGet.
+        ///////////////////////////////////////////////////////////////
+
+        private SQLiteConnection SQLITE_CONNECTION;
+        private string DATA_SOURCE = "data.db";
+
+        public SQLite()
+        {
+            this.SQLITE_CONNECTION = new SQLiteConnection(
+                "Data Source= "+this.DATA_SOURCE+"; " +
+                "Version = 3; " +
+                "New = True; " +
+                "Compress = True; ");
+        }
+
+        public void query(string query, string console_output_text)
+        {
+            SQLiteCommand sqlite_cmd;
+            try
+            {
+                this.SQLITE_CONNECTION.Open();
+                sqlite_cmd = SQLITE_CONNECTION.CreateCommand();
+                sqlite_cmd.CommandText = query;
+                sqlite_cmd.ExecuteNonQuery();
+                Console.WriteLine(console_output_text);
+            }
+            catch (Exception ex)
+            {
+                Console.Write("Error performing Query! Query console output text: " + console_output_text);
+                this.SQLITE_CONNECTION.Close();
+            }
+            finally
+            {
+                this.SQLITE_CONNECTION.Close();
+            }
+        }
+
+        public DataSet ReadData(string query,string console_output_text)
+        {
+            SQLiteCommand sql_cmd;
+            SQLiteDataAdapter DB;
+            DataSet DS = new DataSet();
+            try
+            {
+                this.SQLITE_CONNECTION.Open();
+                sql_cmd = this.SQLITE_CONNECTION.CreateCommand();
+                DB = new SQLiteDataAdapter(query, this.SQLITE_CONNECTION);
+                DS.Reset();
+                DB.Fill(DS);
+                Console.WriteLine(console_output_text);
+            }
+            catch (Exception ex)
+            {
+                this.SQLITE_CONNECTION.Close();
+                Console.WriteLine("Read data failed! console output text: " + console_output_text);
+            }
+            finally
+            {
+                this.SQLITE_CONNECTION.Close();
+            }
+            return DS;
+        }
+
+    }

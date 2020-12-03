@@ -1,0 +1,14 @@
+//Changes the user interface language
+        private void UI_LANGUAGE_CONTROL()
+        {
+            string current_language_settled_on_memory = Memory.language;
+            switch (current_language_settled_on_memory)
+            {
+                case "english":
+                   
+                    break;
+                case "spanish":
+                    
+                    break;
+            }
+        }

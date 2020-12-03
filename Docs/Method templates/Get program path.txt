@@ -1,0 +1,2 @@
+string appPath = Path.GetDirectoryName(Application.ExecutablePath);
+MessageBox.Show(appPath);
